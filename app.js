@@ -6,9 +6,12 @@ const TMDB_BASE = 'https://api.themoviedb.org/3';
 const IMG = 'https://image.tmdb.org/t/p/w500';
 
 const DOM = {
+    genreSelect: document.getElementById('genreSelect'),
+    movieContainer: document.getElementById('movieContainer'),
     app: document.getElementById('app'),
     searchInput: document.getElementById('search-input'),
     searchBtn: document.getElementById('search-btn'),
+
     watchCount: document.getElementById('watch-count'),
     authBtn: document.getElementById('auth-btn'),
     navBtns: document.querySelectorAll('.nav-btn'),
@@ -54,7 +57,6 @@ function parseHash() {
 
 function handleRouting() {
     const { page, params } = parseHash();
-    // show page
     switch (page) {
         case 'home': renderHome(); break;
         case 'search': renderSearch(params.q || ''); break;
@@ -62,15 +64,18 @@ function handleRouting() {
         case 'watchlist': renderWatchlist(); break;
         case 'login': renderLogin(); break;
         case 'signup': renderSignup(); break;
-        case 'genre': renderGenre(params.name || 'Horror'); break;
-        case 'release': renderRelease(params.year || '2022'); break;
         case 'hidden': renderHidden(); break;
         case 'about': renderAbout(); break;
+
+        // 👇 Add this new case for genre pages
+        case 'genre': renderGenre(params.name || 'Horror'); break;
+
         default: renderHome();
     }
-    // update header active state
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
 }
+
+// update header active state
+document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
 
 /* ---------- Render helpers ---------- */
 function el(tag, attrs = {}, ...children) {
@@ -143,7 +148,7 @@ function createCard(item, { showAdd = true } = {}) {
 async function renderHome() {
     DOM.app.innerHTML = '';
     const hero = el('div', { class: 'hero' },
-        el('img', { src: placeholderPoster(), alt: 'hero' }),
+        el('img', { src: 'welcome-poster.jpg', alt: 'Welcome Poster' }),
         el('div', { class: 'meta-block' },
             el('h2', { class: 'page-title' }, 'Welcome to CineScope'),
             el('p', {}, 'Discover trending and top rated movies. Use the search to find films and TV shows.')
@@ -257,6 +262,26 @@ async function renderDetails(id, type = 'movie') {
     }
 }
 
+/* ---------- Genre / Release / Hidden / About ---------- */
+const genresList = [
+    { id: 28, name: "Action" }, { id: 12, name: "Adventure" }, { id: 16, name: "Animation" },
+    { id: 35, name: "Comedy" }, { id: 80, name: "Crime" }, { id: 99, name: "Documentary" },
+    { id: 18, name: "Drama" }, { id: 10751, name: "Family" }, { id: 14, name: "Fantasy" },
+    { id: 36, name: "History" }, { id: 27, name: "Horror" }, { id: 10402, name: "Music" },
+    { id: 9648, name: "Mystery" }, { id: 10749, name: "Romance" }, { id: 878, name: "Science Fiction" },
+    { id: 10770, name: "TV Movie" }, { id: 53, name: "Thriller" }, { id: 10752, name: "War" },
+    { id: 37, name: "Western" }
+];
+
+function populateGenres() {
+    if (!DOM.genreSelect) return;
+    genresList.forEach(g => { const opt = document.createElement('option'); opt.value = g.id; opt.textContent = g.name; DOM.genreSelect.appendChild(opt); });
+}
+
+async function fetchMoviesByGenre(genreId) { const data = await tmdb('/discover/movie', { with_genres: genreId, sort_by: 'popularity.desc', page: 1 }); return data.results || []; }
+function renderMovies(movies) { if (!DOM.movieContainer) return; DOM.movieContainer.innerHTML = ''; if (!movies.length) { DOM.movieContainer.innerHTML = '<p>No movies found.</p>'; return; } movies.forEach(m => DOM.movieContainer.appendChild(createCard(m))); }
+function initGenreFilter() { if (!DOM.genreSelect) return; DOM.genreSelect.addEventListener('change', async e => { const movies = await fetchMoviesByGenre(e.target.value); renderMovies(movies); }); }
+
 function renderWatchlist() {
     DOM.app.innerHTML = '';
     const header = el('div', {}, el('h2', { class: 'page-title' }, 'My Watchlist'));
@@ -335,7 +360,9 @@ function renderAbout() {
     DOM.app.innerHTML = '';
     const card = el('div', { class: 'form' }, el('h2', { class: 'page-title' }, 'About CineScope'),
         el('p', {}, 'CineScope is a prototype movie & TV explorer. It provides search, watchlist, and curated views.'),
-        el('p', {}, 'This is a local demo using TMDB for content; watchlist and auth are stored locally.')
+        el('p', {}, 'This is a local demo using TMDB for content; watchlist and auth are stored locally.Our goal is to make discovering films enjoyable and simple by providing up-to-date recommendations and an easy-to-use interface. Whether you’re looking for your next favorite movie or just browsing for inspiration, CineScope is here to guide your journey through the world of cinema. This project was created by college students Jigme Wangchuk, Duptho Wangmo, Jamyang Choden, Kalpana Monger, and Kezang Dema.')
+        
+
     );
     DOM.app.appendChild(card);
 }
@@ -517,3 +544,24 @@ function renderWatchlist() {
         grid.appendChild(card);
     });
 }
+/* ---------- Init ---------- */
+window.addEventListener('hashchange', handleRouting);
+populateGenres();
+updateWatchCount();
+updateAuthBtn();
+handleRouting();
+
+/* ---------- Genre Filter ---------- */
+DOM.genreSelect.addEventListener('change', async e => {
+    const genreId = e.target.value;
+
+    if (genreId === 'all') {
+        location.hash = 'home';
+    } else {
+        const selectedGenre = genresList.find(g => g.id == genreId);
+        if (selectedGenre) {
+            // Update the hash correctly — no extra spaces or typos
+            location.hash = `genre?name=${encodeURIComponent(selectedGenre.name)}`;
+        }
+    }
+});

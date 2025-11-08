@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Movie App - Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #141e30, #243b55);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: white;
+      margin: 0;
+    }
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 30px;
+      width: 350px;
+      border-radius: 15px;
+      text-align: center;
+    }
+    input, button { width: 90%; padding: 10px; margin-top: 10px; }
+    button { background: #f39c12; border: none; border-radius: 5px; color: white; cursor: pointer; }
+    .hidden { display: none; }
+    a { color: #f39c12; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div id="loginForm">
+      <h2>🎬 Movie App Login</h2>
+      <input type="text" id="loginUsername" placeholder="Username" required />
+      <input type="password" id="loginPassword" placeholder="Password" required />
+      <button onclick="login()">Login</button>
+      <p>Don’t have an account? <a onclick="showSignup()">Sign up</a></p>
+    </div>
+
+    <div id="signupForm" class="hidden">
+      <h2>Create Account</h2>
+      <input type="text" id="signupUsername" placeholder="Username" required />
+      <input type="email" id="signupEmail" placeholder="Email" required />
+      <input type="password" id="signupPassword" placeholder="Password" required />
+      <button onclick="signup()">Sign Up</button>
+      <p>Already have an account? <a onclick="showLogin()">Login</a></p>
+    </div>
+  </div>
+
+  <script>
+    // Get input fields
+    const loginUsername = document.getElementById("loginUsername");
+    const loginPassword = document.getElementById("loginPassword");
+    const signupUsername = document.getElementById("signupUsername");
+    const signupEmail = document.getElementById("signupEmail");
+    const signupPassword = document.getElementById("signupPassword");
+
+    const loginForm = document.getElementById("loginForm");
+    const signupForm = document.getElementById("signupForm");
+
+    // Show signup form
+    function showSignup() {
+      loginForm.classList.add("hidden");
+      signupForm.classList.remove("hidden");
+    }
+
+    // Show login form
+    function showLogin() {
+      signupForm.classList.add("hidden");
+      loginForm.classList.remove("hidden");
+    }
+
+    // Sign up function
+    function signup() {
+      if (!signupUsername.value||!signupEmail.value||!signupPassword.value) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      const user = {
+        username: signupUsername.value,
+        email: signupEmail.value,
+        password: signupPassword.value
+      };
+
+      localStorage.setItem("user", JSON.stringify(user));
+      alert("Account created! Login now.");
+      showLogin();
+    }
+
+    // Login function
+    function login() {
+      const user = JSON.parse(localStorage.getItem("user"));
+
+      if (user && loginUsername.value === user.username && loginPassword.value === user.password) {
+        localStorage.setItem("isLoggedIn", "true");
+        window.location.href = "index.html"; // make sure home.html exists in the same folder
+      } else {
+        alert("Invalid username or password.");
+      }
+    }
+  </script>
+
+</body>
+</html>

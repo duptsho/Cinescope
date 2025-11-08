@@ -1,64 +1,87 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>CineScope — Movie & TV Explorer</title>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="preconnect" href="https://image.tmdb.org" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>CineScope — Movie & TV Explorer</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://image.tmdb.org" />
 </head>
+
 <body>
-  <header class="site-header">
-    <div class="container header-inner">
-      <div class="brand-wrap">
-        <button id="nav-toggle" class="icon-btn">☰</button>
-        <h1 class="brand" data-route="home">CineScope</h1>
-      </div>
+    <header class="site-header">
+        <div class="container header-inner">
+            <div class="brand-wrap">
+                <button id="nav-toggle" class="icon-btn">☰</button>
+                <h1 class="brand" data-route="home">CineScope</h1>
+            </div>
 
-      <div class="search-wrap">
-        <input id="search-input" type="search" placeholder="Search movies or TV shows..." />
-        <button id="search-btn" class="btn small">Search</button>
-      </div>
+            <div class="search-wrap">
+                <input id="search-input" type="search" placeholder="Search movies or TV shows..." />
+                <button id="search-btn" class="btn small">Search</button>
+                <select id="genreSelect">
+                    <option value="all">All Genres</option>
+                    <option value="28">Action</option>
+                    <option value="12">Adventure</option>
+                    <option value="16">Animation</option>
+                    <option value="35">Comedy</option>
+                    <option value="80">Crime</option>
+                    <option value="99">Documentary</option>
+                    <option value="18">Drama</option>
+                    <option value="10751">Family</option>
+                    <option value="14">Fantasy</option>
+                    <option value="36">History</option>
+                    <option value="27">Horror</option>
+                    <option value="10402">Music</option>
+                    <option value="9648">Mystery</option>
+                    <option value="10749">Romance</option>
+                    <option value="878">Science Fiction</option>
+                    <option value="10770">TV Movie</option>
+                    <option value="53">Thriller</option>
+                    <option value="10752">War</option>
+                    <option value="37">Western</option>
+                </select>
+            </div>
 
-      <nav class="nav">
-        <button class="nav-btn" data-route="home">Home</button>
-        <button class="nav-btn" data-route="hidden">Hidden Gems</button>
-        <button class="nav-btn" data-route="genre" data-genre="Horror">Horror</button>
-        <button class="nav-btn" data-route="release" data-year="2022">2022</button>
-        <button class="nav-btn" data-route="watchlist">Watchlist <span id="watch-count">0</span></button>
-        <button class="nav-btn" data-route="about">About</button>
-        <button id="auth-btn" class="nav-btn" data-route="login">Log In</button>
-      </nav>
-    </div>
-  </header>
-
-  <main class="container main" id="app">
-    <!-- Dynamic content injected here -->
-  </main>
-
-  <footer class="site-footer">
-    <div class="container">
-      <small>© CineScope • Prototype</small>
-    </div>
-  </footer>
-
-  <template id="card-tpl">
-    <article class="card">
-      <img class="poster" alt="Poster"/>
-      <div class="card-body">
-        <h3 class="title"></h3>
-        <p class="meta"></p>
-        <p class="overview"></p>
-        <div class="card-actions">
-          <button class="btn watch-btn">Add</button>
-          <button class="btn details-btn">Details</button> 
+            <nav class="nav">
+                <button class="nav-btn" data-route="home">Home</button>
+                <button class="nav-btn" data-route="hidden">Hidden Gems</button>
+                <button class="nav-btn" data-route="watchlist">Watchlist <span id="watch-count">0</span></button>
+                <button class="nav-btn" data-route="about">About Us</button>
+                <button id="auth-btn" class="nav-btn" data-route="login">Log In</button>
+            </nav>
         </div>
-      </div>
-    </article>
-  </template>
+    </header>
 
-  <div id="toast" class="toast hidden"></div>
+    <main class="container main" id="app">
+        <!-- Dynamic content injected here -->
+    </main>
 
-  <script src="app.js" defer></script>
+    <footer class="site-footer">
+        <div class="container">
+            <small>© CineScope • Prototype</small>
+        </div>
+    </footer>
+
+    <template id="card-tpl">
+        <article class="card">
+            <img class="poster" alt="Poster" />
+            <div class="card-body">
+                <h3 class="title"></h3>
+                <p class="meta"></p>
+                <p class="overview"></p>
+                <div class="card-actions">
+                    <button class="btn watch-btn">Add</button>
+                    <button class="btn details-btn">Details</button>
+                </div>
+            </div>
+        </article>
+    </template>
+
+    <div id="toast" class="toast hidden"></div>
+
+    <script src="app.js" defer></script>
 </body>
+
 </html>
